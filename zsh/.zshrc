@@ -117,7 +117,7 @@ export LANG=en_US.UTF-8
 
 # Other user-specific environment variables
 
-export EDITOR=/bin/nano
+export EDITOR="$(which nano)"
 export KUBECONFIG=~/.kube/config:~/.kube/clearlaw.kubeconfig 
 export GOROOT=/usr/local/go
 export PATH=~/go/bin:$GOROOT/bin:~/.linkerd2/bin:$PATH
