@@ -1,0 +1,19 @@
+#!/usr/local/bin/bash
+
+SDIR := $(shell pwd)
+
+all: configure-shell install-tmux install-alacritty
+
+configure-shell:
+	ln -sf ${SDIR}/zsh/.zshrc ${HOME}/.zshrc
+	ln -sf ${SDIR}/powerlevel10k/.p10k.zsh ${HOME}/.p10k.zsh
+
+install-tmux:
+	ln -sf ${SDIR}/tmux/tmux.conf ${HOME}/.tmux.conf
+	mkdir -p ${HOME}/.tmux/plugins
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+install-alacritty:
+	brew install --cask alacritty
+	mkdir -p ${HOME}/.config/alacritty
+	ln -sf ${SDIR}/alacritty/alacritty.yml ${HOME}/.alacritty.yml
