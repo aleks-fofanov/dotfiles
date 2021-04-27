@@ -1,7 +1,7 @@
-ifeq ($(OS),Windows_NT)
-	$(error Microsoft Windows is not supported)
-else ifeq ($(OS),OSX)
+UNAME := $(shell uname -s)
+
+ifeq ($(UNAME),Darwin)
 	include Makefile.macos
 else
-  	include Makefile.linux
+	include Makefile.linux
 endif
