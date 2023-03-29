@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="${HOME}/.oh-my-zsh"
+export ZSH="/home/rockwell/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -102,11 +102,12 @@ source <(fluxctl completion zsh)
 source <(flux completion zsh)
 complete -C '/usr/local/bin/aws_completer' aws
 
+
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '~/google-cloud-sdk/path.zsh.inc' ]; then . '~/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/home/rockwell/google-cloud-sdk/path.zsh.inc' ]; then . '/home/rockwell/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '~/google-cloud-sdk/completion.zsh.inc' ]; then . '~/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/home/rockwell/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/rockwell/google-cloud-sdk/completion.zsh.inc'; fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -117,18 +118,19 @@ export LANG=en_US.UTF-8
 
 # Other user-specific environment variables
 
-export EDITOR="$(which nano)"
-export KUBECONFIG=~/.kube/config:~/.kube/clearlaw.kubeconfig 
+export EDITOR=/bin/nano
+export KUBECONFIG=~/.kube/config:~/.kube/microk8s
 export GOROOT=/usr/local/go
-export PATH=~/go/bin:$GOROOT/bin:~/.linkerd2/bin:$PATH
+export PATH=/home/rockwell/go/bin:$GOROOT/bin:/home/rockwell/.linkerd2/bin:$PATH
 export PATH=$PATH:$(go env GOPATH)/bin
 export AWS_ASSUME_ROLE_TTL=1h
 export AWS_SESSION_TTL=1h
 export AWS_FEDERATION_TOKEN_TTL=1h
 export CHAMBER_KMS_KEY_ALIAS=aws/ssm
 export FLUX_FORWARD_NAMESPACE=fluxcd
+export DOCKER_BUILDKIT=1
 
-export SPEEDCTL_HOME=~/.speedscale
+export SPEEDCTL_HOME=/home/rockwell/.speedscale
 export PATH=$SPEEDCTL_HOME:$PATH
 
 # Nordic colors
@@ -154,9 +156,16 @@ test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias tmux='TERM=xterm-256color tmux'
-alias kc='kubectl'
 alias winbox='wine /usr/local/bin/winbox64.exe'
+alias kc='kubectl'
 alias btest='wine /usr/local/bin/btest.exe'
+alias gitsquash_dev='git reset $(git merge-base dev $(git rev-parse --abbrev-ref HEAD))'
+alias gitsquash_master='git reset $(git merge-base master $(git rev-parse --abbrev-ref HEAD))'
+alias laws='aws --endpoint-url=http://localhost:4566 --profile=localstack'
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+alias mkctl="microk8s kubectl"
+alias ls='exa'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -167,3 +176,15 @@ autoload -U compinit && compinit
 
 # Enable direnv
 eval "$(direnv hook $SHELL)"
+
+# Enable tfswitch
+load-tfswitch() {
+  local tfswitchrc_path=".tfswitchrc"
+  local terragrunt_path="terragrunt.hcl"
+
+  if [ -f "$tfswitchrc_path" ] || [ -f "$terragrunt_path" ]; then
+    tfswitch
+  fi
+}
+add-zsh-hook chpwd load-tfswitch
+load-tfswitch
