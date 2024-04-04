@@ -17,4 +17,4 @@ install-tmux:
 install-alacritty:
 	brew install --cask alacritty
 	mkdir -p ${HOME}/.config/alacritty
-	ln -sf ${SDIR}/alacritty/alacritty.yml ${HOME}/.alacritty.yml
+	ln -sf ${SDIR}/alacritty/.alacritty.toml ${HOME}/.alacritty.toml

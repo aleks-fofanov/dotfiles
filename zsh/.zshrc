@@ -95,43 +95,21 @@ source $ZSH/oh-my-zsh.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-# Completions
-
-source <(aws-vault --completion-script-zsh)
-source <(fluxctl completion zsh)
-source <(flux completion zsh)
-complete -C '/usr/local/bin/aws_completer' aws
-
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/rockwell/google-cloud-sdk/path.zsh.inc' ]; then . '/home/rockwell/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/rockwell/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/rockwell/google-cloud-sdk/completion.zsh.inc'; fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
 
 # Other user-specific environment variables
 
 export EDITOR=/bin/nano
-export KUBECONFIG=~/.kube/config:~/.kube/microk8s
+export KUBECONFIG=$(for i in $(find ~/.kube/ -maxdepth 1 -type f) ; do echo -n ":$i"; done | cut -c 2-)
 export GOROOT=/usr/local/go
-export PATH=/home/rockwell/go/bin:$GOROOT/bin:/home/rockwell/.linkerd2/bin:$PATH
+export PATH=/home/rockwell/go/bin:$GOROOT/bin:/home/rockwell/.ones/:/home/rockwell/bin/:$PATH
 export PATH=$PATH:$(go env GOPATH)/bin
 export AWS_ASSUME_ROLE_TTL=1h
 export AWS_SESSION_TTL=1h
 export AWS_FEDERATION_TOKEN_TTL=1h
 export CHAMBER_KMS_KEY_ALIAS=aws/ssm
-export FLUX_FORWARD_NAMESPACE=fluxcd
 export DOCKER_BUILDKIT=1
-
-export SPEEDCTL_HOME=/home/rockwell/.speedscale
-export PATH=$SPEEDCTL_HOME:$PATH
 
 # Nordic colors
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
@@ -156,7 +134,7 @@ test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias tmux='TERM=xterm-256color tmux'
-alias winbox='wine /usr/local/bin/winbox64.exe'
+alias winbox='wine /home/rockwell/winbox64.exe'
 alias kc='kubectl'
 alias btest='wine /usr/local/bin/btest.exe'
 alias gitsquash_dev='git reset $(git merge-base dev $(git rev-parse --abbrev-ref HEAD))'
@@ -165,7 +143,8 @@ alias laws='aws --endpoint-url=http://localhost:4566 --profile=localstack'
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias mkctl="microk8s kubectl"
-alias ls='exa'
+alias ls='eza'
+alias krueger='docker compose run --rm krueger'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -173,6 +152,15 @@ alias ls='exa'
 # Enable completion
 autoload -U +X bashcompinit && bashcompinit
 autoload -U compinit && compinit
+
+# Completions
+
+source <(aws-vault --completion-script-zsh)
+source <(flux completion zsh)
+source <(buf completion zsh)
+onesctl completion zsh > "${fpath[1]}/_onesctl"
+
+complete -C '/usr/local/bin/aws_completer' aws
 
 # Enable direnv
 eval "$(direnv hook $SHELL)"
